@@ -1,0 +1,24 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Flutter: Launch",
+        "request": "launch",
+        "type": "dart",
+        "program": "lib/main.dart",  // Path to your main file
+        "cwd": "${workspaceFolder}",
+        "flutterMode": "debug",  // You can set this to 'release' for release builds
+        "args": []
+      },
+      {
+        "name": "Flutter: Attach to Process",
+        "request": "attach",
+        "type": "dart",
+        "cwd": "${workspaceFolder}",
+        "deviceId": "flutter",  // Specify device if needed, or leave it as is for auto-detect
+        "flutterMode": "debug",
+        "args": []
+      }
+    ]
+  }
+  
