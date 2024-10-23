@@ -5,6 +5,7 @@ import 'package:gecko_internal/model/ticket-type.dart';
 import 'package:gecko_internal/services/staff-api.dart';
 import 'package:gecko_internal/theme.dart';
 import 'package:gecko_internal/utils/global-loader.dart';
+import 'package:gecko_internal/views/widgets/customConfirmatoinDialog.dart';
 import 'package:gecko_internal/views/widgets/nfc-listening-dialog.dart';
 import 'package:lottie/lottie.dart';
 import '../../../../model/event.dart';
@@ -35,6 +36,7 @@ class AvailableTicketsList extends StatefulWidget {
 class _AvailableTicketsListState extends State<AvailableTicketsList> {
   List<TicketType> _ticketTypes = [];
   List<TicketType> _filteredTicketTypes = [];
+ bool didPop = true;
 
   late TicketType _selectedTicket;
   bool _isLoading = true;
@@ -134,8 +136,32 @@ class _AvailableTicketsListState extends State<AvailableTicketsList> {
     }
   }
 
-  // Search events by name
+Future<bool> _onBackPressed(bool pop, dynamic result) async {
+        // Show the confirmation dialog when back button is pressed
+       pop = await showDialog(
+          context: context,
+          barrierDismissible: false, // Disable dismiss by tapping outside
+          builder: (BuildContext context) {
+            return ConfirmationDialog(
+              title: "Leave Station?",
+              description: "Are you sure you want to exit your station?",
+              lottieAsset: 'assets/animation/exit.json', // Replace with your Lottie asset
+              onConfirm: () {
+                pop = true;
+              //  Navigator.of(context).pop(true); // Return true to exit
+              },
+              onCancel: () {
+                pop = false;
+              //  Navigator.of(context).pop(false); // Return false to cancel
+              },
+            );
+          },
+        );
 
+        // Return whether the app should actually exit
+        return pop;
+      }
+      
   Widget _row(String title, String value) {
     return Container(
       height: 40,
@@ -269,7 +295,10 @@ class _AvailableTicketsListState extends State<AvailableTicketsList> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
+    return  PopScope(
+      canPop: didPop,
+      onPopInvokedWithResult:_onBackPressed,
+      child:Scaffold(
       body: Container(
         height: height,
         child: Stack(
@@ -316,6 +345,6 @@ class _AvailableTicketsListState extends State<AvailableTicketsList> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

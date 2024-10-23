@@ -3,7 +3,8 @@ class Ticket {
   final String attendeeId;
   final String ticketTypeId;
   final String eventId;
-  final int createdAt;
+   final String? nfcId;
+  final num createdAt;
   final String createdBy;
 
   Ticket({
@@ -11,6 +12,7 @@ class Ticket {
     required this.attendeeId,
     required this.ticketTypeId,
     required this.eventId,
+     required this.nfcId,
     required this.createdAt,
     required this.createdBy,
   });
@@ -21,6 +23,7 @@ class Ticket {
       attendeeId: json['attendeeId'],
       ticketTypeId: json['ticketTypeId'],
       eventId: json['eventId'],
+        nfcId: json['nfcId'] ??"",
       createdAt: json['createdAt'],
       createdBy: json['createdBy'],
     );
@@ -32,6 +35,7 @@ class Ticket {
       'attendeeId': attendeeId,
       'ticketTypeId': ticketTypeId,
       'eventId': eventId,
+      'nfcId':nfcId,
       'createdAt': createdAt,
       'createdBy': createdBy,
     };

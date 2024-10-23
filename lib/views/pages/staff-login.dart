@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gecko_internal/model/station.dart';
+import 'package:gecko_internal/views/pages/features/check-in/access-control.dart';
 import 'package:gecko_internal/views/pages/features/ticket-redemption/available-tickets-list.dart';
+import 'package:gecko_internal/views/widgets/authentication-dialog.dart';
 import '../../model/event.dart';
 import '../../model/location.dart';
 import '../../model/user.dart';
@@ -34,6 +36,25 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
   final auth = new AuthService();
   final loader = new GlobalLoader();
   final nfc = new NFCListener();
+  bool didPop = false;
+  Future<bool> _onBackPressed(bool pop, dynamic results) async {
+    pop = await showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismiss by tapping outside
+      builder: (BuildContext context) {
+        return AuthenticationDialog(
+          onCancel: () {
+            // Handle cancel action
+            print("Login canceled.");
+            pop = false;
+          },
+        );
+      },
+    );
+
+    return pop;
+  }
+
   Future<void> _init() async {
     try {
       var listenr = await nfc.listenForNFCTap();
@@ -292,9 +313,16 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
         ));
         break;
       case 'check-in':
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Not Implemented'),
-        ));
+       Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AccessControlPage(
+                event: widget.event,
+                location: widget.location,
+                station: widget.station,
+                staffUser: user,
+              ),
+            ));
         break;
     }
   }
@@ -308,7 +336,10 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return Scaffold(
+    return PopScope(  
+      canPop: didPop,
+      onPopInvokedWithResult: _onBackPressed,
+      child: Scaffold(
         body: Container(
       height: height,
       child: Stack(
@@ -344,6 +375,6 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
           ),
         ],
       ),
-    ));
+    )));
   }
 }

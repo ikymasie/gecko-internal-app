@@ -16,7 +16,7 @@ class NFCListener {
 
       // Start listening for NFC tags
       await NfcManager.instance.startSession(
-        invalidateAfterFirstRead: false,
+        invalidateAfterFirstRead: true,
         onDiscovered: (NfcTag tag) async {
           var ndef = Ndef.from(tag);
           if (ndef != null) {
