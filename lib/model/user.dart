@@ -1,5 +1,4 @@
 // User Class
-import 'enums.dart';
 
 class User {
   final String id;
@@ -24,7 +23,7 @@ class User {
       name: json['name'],
       email: json['email'],
       phoneNumber: json['phoneNumber'],
-      role:json['role'],
+      role: json['role'],
       published: json['published'],
     );
   }
@@ -53,7 +52,13 @@ class AdminUser extends User {
     required String role,
     required bool published,
     required this.permissions,
-  }) : super(id: id, name: name, email: email, phoneNumber: phoneNumber, role: role, published: published);
+  }) : super(
+            id: id,
+            name: name,
+            email: email,
+            phoneNumber: phoneNumber,
+            role: role,
+            published: published);
 
   factory AdminUser.fromJson(Map<String, dynamic> json) {
     return AdminUser(
@@ -63,7 +68,7 @@ class AdminUser extends User {
       phoneNumber: json['phoneNumber'],
       role: json['role'],
       published: json['published'],
-      permissions:  List<String>.from(json['permissions']),
+      permissions: List<String>.from(json['permissions']),
     );
   }
 
@@ -97,7 +102,13 @@ class OrganizerUser extends User {
     required this.managedEventIds,
     required this.permissions,
     required this.accessCode,
-  }) : super(id: id, name: name, email: email, phoneNumber: phoneNumber, role: role, published: published);
+  }) : super(
+            id: id,
+            name: name,
+            email: email,
+            phoneNumber: phoneNumber,
+            role: role,
+            published: published);
 
   factory OrganizerUser.fromJson(Map<String, dynamic> json) {
     return OrganizerUser(
@@ -105,10 +116,10 @@ class OrganizerUser extends User {
       name: json['name'],
       email: json['email'],
       phoneNumber: json['phoneNumber'],
-      role:json['role'],
+      role: json['role'],
       published: json['published'],
       managedEventIds: List<String>.from(json['managedEventIds']),
-      permissions:List<String>.from(json['permissions']),
+      permissions: List<String>.from(json['permissions']),
       accessCode: json['accessCode'],
     );
   }
@@ -123,7 +134,7 @@ class OrganizerUser extends User {
       'role': role,
       'published': published,
       'managedEventIds': managedEventIds,
-      'permissions':permissions,
+      'permissions': permissions,
       'accessCode': accessCode,
     };
   }
@@ -143,7 +154,13 @@ class VendorUser extends User {
     required bool published,
     required this.vendorId,
     required this.accessCode,
-  }) : super(id: id, name: name, email: email, phoneNumber: phoneNumber, role: role, published: published);
+  }) : super(
+            id: id,
+            name: name,
+            email: email,
+            phoneNumber: phoneNumber,
+            role: role,
+            published: published);
 
   factory VendorUser.fromJson(Map<String, dynamic> json) {
     return VendorUser(
@@ -190,7 +207,13 @@ class AttendeeUser extends User {
     this.nfcId,
     this.ticketIds,
     required this.balance,
-  }) : super(id: id, name: name, email: email, phoneNumber: phoneNumber, role: role, published: published);
+  }) : super(
+            id: id,
+            name: name,
+            email: email,
+            phoneNumber: phoneNumber,
+            role: role,
+            published: published);
 
   factory AttendeeUser.fromJson(Map<String, dynamic> json) {
     return AttendeeUser(
@@ -237,7 +260,13 @@ class StaffUser extends User {
     required this.accessCode,
     required this.assignedStationIds,
     required this.permissions,
-  }) : super(id: id, name: name, email: email, phoneNumber: phoneNumber, role: role, published: published);
+  }) : super(
+            id: id,
+            name: name,
+            email: email,
+            phoneNumber: phoneNumber,
+            role: role,
+            published: published);
 
   factory StaffUser.fromJson(Map<String, dynamic> json) {
     return StaffUser(
@@ -245,11 +274,11 @@ class StaffUser extends User {
       name: json['name'],
       email: json['email'],
       phoneNumber: json['phoneNumber'],
-      role:json['role'],
+      role: json['role'],
       published: json['published'],
       accessCode: json['accessCode'],
       assignedStationIds: List<String>.from(json['assignedStationIds']),
-      permissions:  List<String>.from(json['permissions']),
+      permissions: List<String>.from(json['permissions']),
     );
   }
 

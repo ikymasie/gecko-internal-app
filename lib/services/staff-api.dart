@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../model/nfc-assignment.dart';
 import '../model/nfc-transaction.dart';
 import '../model/ticket-type.dart';
-import '../model/ticket.dart';
 import '../model/user.dart';
 
 class StaffApi {
@@ -75,7 +73,7 @@ class StaffApi {
   }
 
   // Create a ticket for an attendee
-  Future<Map<String,dynamic>> createTicketForAttendee(
+  Future<Map<String, dynamic>> createTicketForAttendee(
       Map<String, dynamic> ticketData) async {
     final url = Uri.parse('$baseUrl/staff/ticket/create');
     final response = await http.post(
@@ -83,12 +81,12 @@ class StaffApi {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(ticketData),
     );
-    var item =jsonDecode(response.body);
+    var item = jsonDecode(response.body);
     print('${item['data']}');
-    if (item["success"]==false) {
+    if (item["success"] == false) {
       throw Exception('Failed to create ticket for attendee');
     } else {
-      return  item['data'];
+      return item['data'];
     }
   }
 

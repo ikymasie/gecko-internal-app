@@ -1,5 +1,3 @@
-import 'enums.dart';
-
 class Station {
   final String id;
   final String eventId;
