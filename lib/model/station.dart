@@ -1,7 +1,9 @@
+import 'station_type.dart';
+
 class Station {
   final String id;
   final String eventId;
-  final String type;
+  final StationType type;
   final String? name;
   final String locationId;
   final bool isActive;
@@ -21,7 +23,8 @@ class Station {
     return Station(
       id: json['id'],
       eventId: json['eventId'],
-      type: json['type'],
+      type: StationType.values
+          .firstWhere((e) => e.toString() == 'StationType.${json['type']}'),
       name: json['name'],
       locationId: json['locationId'],
       isActive: json['isActive'],
@@ -33,7 +36,7 @@ class Station {
     return {
       'id': id,
       'eventId': eventId,
-      'type': type,
+      'type': type.toString().split('.').last,
       'name': name,
       'locationId': locationId,
       'isActive': isActive,

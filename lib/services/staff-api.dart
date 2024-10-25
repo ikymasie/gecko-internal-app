@@ -32,6 +32,18 @@ class StaffApi {
     }
   }
 
+  // Add this method to fetch attendee by NFC ID
+  Future<AttendeeUser> getAttendeeByNfcId(String nfcId) async {
+    final url = Uri.parse(
+        '$baseUrl/staff/attendee/nfc/$nfcId'); // Update the URL as needed
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      return AttendeeUser.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load attendee by NFC ID');
+    }
+  }
+
   // Process a top-up with the relevant details (no return expected)
   Future<void> processTopUp(TopUpDetails topUpData) async {
     final url = Uri.parse('$baseUrl/staff/top-up');
@@ -110,16 +122,7 @@ class StaffApi {
       throw Exception(
           'Failed to link NFC tag to attendee: ${rsp['error'] ?? 'Unknown error'}');
     }
-  }
-
-  // Add this method if it doesn't exist
-  Future<AttendeeUser> getAttendeeByNfcId(String nfcId) async {
-    final url = Uri.parse('$baseUrl/staff/attendee/nfc/$nfcId');
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      return AttendeeUser.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to load attendee by NFC ID');
-    }
+    // Optionally, you can log the response data if needed
+    print('Response data: $rsp');
   }
 }

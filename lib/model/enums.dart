@@ -30,9 +30,3 @@ enum RSVPStatus {
   Confirmed,
   Declined,
 }
-
-enum StationType {
-  CheckIn,
-  TopUp,
-  TicketRedemption,
-}

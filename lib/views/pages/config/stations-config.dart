@@ -10,6 +10,7 @@ import '../../../model/user.dart';
 import '../../../utils/permission-manager.dart';
 import '../../widgets/bezierContainer.dart'; // Import your BezierContainer widget
 import '../../../services/admin-api.dart'; // Import your Admin API
+import 'package:gecko_internal/model/station_type.dart';
 
 class StationsConfig extends StatefulWidget {
   final AdminUser adminUser; // AdminUser passed to the page
@@ -151,16 +152,15 @@ class _StationsConfigState extends State<StationsConfig> {
 
   Widget _getTypeRow(Station station) {
     switch (station.type) {
-      case 'top-up':
+      case StationType.TopUp:
         var text = '';
         return _row("", text);
-      case 'check-in':
+      case StationType.CheckIn:
         return _row("Allowed Tickets",
             widget.location.accessLevelIds.length.toString());
-      case 'ticket-redemption':
+      case StationType.TicketRedemption:
         var text = '';
-        for (var i = 0; i < widget.event.ticketTypes!.length; i++) {
-          var type = widget.event.ticketTypes![i];
+        for (var type in widget.event.ticketTypes!) {
           text += "${type.name}\n";
         }
         return _row("Available Tickets", text);
@@ -225,7 +225,11 @@ class _StationsConfigState extends State<StationsConfig> {
                                                   fontSize: 13),
                                             ),
                                             Text(
-                                              event.type.toUpperCase(),
+                                              event.type
+                                                  .toString()
+                                                  .split('.')
+                                                  .last
+                                                  .toUpperCase(),
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   color: GeckoTheme
