@@ -107,7 +107,19 @@ class StaffApi {
     );
     var rsp = jsonDecode(response.body);
     if (response.statusCode != 200) {
-      throw Exception('Failed to link NFC tag to attendee');
+      throw Exception(
+          'Failed to link NFC tag to attendee: ${rsp['error'] ?? 'Unknown error'}');
+    }
+  }
+
+  // Add this method if it doesn't exist
+  Future<AttendeeUser> getAttendeeByNfcId(String nfcId) async {
+    final url = Uri.parse('$baseUrl/staff/attendee/nfc/$nfcId');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      return AttendeeUser.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load attendee by NFC ID');
     }
   }
 }
