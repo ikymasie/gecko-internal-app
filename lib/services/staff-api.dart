@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../model/nfc-assignment.dart';
 import '../model/nfc-transaction.dart';
 import '../model/ticket-type.dart';
-import '../model/ticket.dart';
+import '../model/top-up.dart';
 import '../model/user.dart';
 
 class StaffApi {
-  final String baseUrl = "https://343e-168-167-81-94.ngrok-free.app";
+  final String baseUrl = "https://gecko-api-c78d4e2345c5.herokuapp.com";
 
   StaffApi();
 
@@ -35,14 +34,55 @@ class StaffApi {
   }
 
   // Process a top-up with the relevant details (no return expected)
-  Future<void> processTopUp(TopUpDetails topUpData) async {
+  // Process a top-up and return the TopUp response
+  Future<TopUp> processTopUp({
+    required String staffId,
+    required String staffName,
+    required String eventId,
+    required String eventName,
+    required String locationId,
+    required String nfcId,
+    required String locationName,
+    required String stationId,
+    required String stationName,
+    required double amount,
+    required double lat,
+    required double lng,
+  }) async {
     final url = Uri.parse('$baseUrl/staff/top-up');
+
+    // Creating the JSON body with the individual parameters
+    final body = {
+      'staffId': staffId,
+      'staffName': staffName,
+      'eventId': eventId,
+      'eventName': eventName,
+      'locationId': locationId,
+      'nfcId': nfcId,
+      'locationName': locationName,
+      'stationId': stationId,
+      'stationName': stationName,
+      'amount': amount,
+      'lat': lat,
+      'lng': lng,
+    };
+
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(topUpData.toJson()),
+      body: jsonEncode(body),
     );
-    if (response.statusCode != 200) {
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+
+      // Assuming that the `data` field contains the TopUp information
+      if (responseData['data'] != null) {
+        return TopUp.fromJson(responseData['data']);
+      } else {
+        throw Exception('Top-up data not found in response');
+      }
+    } else {
       throw Exception('Failed to process top-up');
     }
   }
@@ -75,7 +115,7 @@ class StaffApi {
   }
 
   // Create a ticket for an attendee
-  Future<Map<String,dynamic>> createTicketForAttendee(
+  Future<Map<String, dynamic>> createTicketForAttendee(
       Map<String, dynamic> ticketData) async {
     final url = Uri.parse('$baseUrl/staff/ticket/create');
     final response = await http.post(
@@ -83,12 +123,12 @@ class StaffApi {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(ticketData),
     );
-    var item =jsonDecode(response.body);
+    var item = jsonDecode(response.body);
     print('${item['data']}');
-    if (item["success"]==false) {
+    if (item["success"] == false) {
       throw Exception('Failed to create ticket for attendee');
     } else {
-      return  item['data'];
+      return item['data'];
     }
   }
 

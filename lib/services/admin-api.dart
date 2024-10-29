@@ -8,7 +8,7 @@ import '../model/station.dart';
 import '../model/user.dart';
 
 class AdminApi {
-  final String baseUrl="https://343e-168-167-81-94.ngrok-free.app";
+  final String baseUrl="https://gecko-api-c78d4e2345c5.herokuapp.com";
 
   AdminApi();
  

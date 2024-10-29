@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gecko_internal/model/station.dart';
 import 'package:gecko_internal/views/pages/features/check-in/access-control.dart';
 import 'package:gecko_internal/views/pages/features/ticket-redemption/available-tickets-list.dart';
+import 'package:gecko_internal/views/pages/features/top-up/top-up-screen.dart';
 import 'package:gecko_internal/views/widgets/authentication-dialog.dart';
 import '../../model/event.dart';
 import '../../model/location.dart';
@@ -47,6 +48,12 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
             // Handle cancel action
             print("Login canceled.");
             pop = false;
+          },
+          onSuccess: () {
+            // Handle success action
+            print("Login successful.");
+            pop = true;
+            Navigator.of(context).pop(true);
           },
         );
       },
@@ -308,12 +315,20 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
             ));
         break;
       case 'top-up':
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Not Implemented'),
-        ));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TopUpPage(
+                adminUser: widget.adminUser,
+                event: widget.event,
+                location: widget.location,
+                station: widget.station,
+                staffUser: user,
+              ),
+            ));
         break;
       case 'check-in':
-       Navigator.push(
+        Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => AccessControlPage(
@@ -336,45 +351,46 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return PopScope(  
-      canPop: didPop,
-      onPopInvokedWithResult: _onBackPressed,
-      child: Scaffold(
-        body: Container(
-      height: height,
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-              top: -height * .15,
-              right: -MediaQuery.of(context).size.width * .4,
-              child: Hero(tag: 'main_banner', child: const BezierContainer())),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: height * .2),
-                  _title(),
-                  const SizedBox(height: 50),
-                  _emailPasswordWidget(),
-                  const SizedBox(height: 20),
-                  _submitButton(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    alignment: Alignment.centerRight,
-                    child: const Text('Forgot Password ?',
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500)),
+    return PopScope(
+        canPop: didPop,
+        onPopInvokedWithResult: _onBackPressed,
+        child: Scaffold(
+            body: Container(
+          height: height,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                  top: -height * .15,
+                  right: -MediaQuery.of(context).size.width * .4,
+                  child:
+                      Hero(tag: 'main_banner', child: const BezierContainer())),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(height: height * .2),
+                      _title(),
+                      const SizedBox(height: 50),
+                      _emailPasswordWidget(),
+                      const SizedBox(height: 20),
+                      _submitButton(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        alignment: Alignment.centerRight,
+                        child: const Text('Forgot Password ?',
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w500)),
+                      ),
+                      _divider()
+                    ],
                   ),
-                  _divider()
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    )));
+        )));
   }
 }

@@ -3,8 +3,9 @@ import '../../services/auth-service.dart';
 import '../../utils/global-loader.dart';
 
 class AuthenticationDialog extends StatefulWidget {
-  final VoidCallback onCancel; 
-  AuthenticationDialog({required this.onCancel});
+  final VoidCallback onCancel;
+  final Function() onSuccess;
+  AuthenticationDialog({required this.onCancel, required this.onSuccess});
 
   @override
   _AuthenticationDialogState createState() => _AuthenticationDialogState();
@@ -28,7 +29,9 @@ class _AuthenticationDialogState extends State<AuthenticationDialog> {
       return;
     }
 
-    loader.showLoader(context, lottieAsset: 'assets/animation/loading.json', backgroundColor: Colors.white);
+    loader.showLoader(context,
+        lottieAsset: 'assets/animation/loading.json',
+        backgroundColor: Colors.white);
 
     try {
       // Attempt to log in using the AuthService
@@ -43,10 +46,11 @@ class _AuthenticationDialogState extends State<AuthenticationDialog> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Permission Granted!'),
       ));
+      widget.onSuccess(); // Call the onSuccess function from the parent
       loader.hideLoader();
 
-      Navigator.of(context).pop(true); // Return true to parent when login succeeds
-
+      Navigator.of(context)
+          .pop(true); // Return true to parent when login succeeds
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Authentication failed: $error'),
@@ -56,7 +60,8 @@ class _AuthenticationDialogState extends State<AuthenticationDialog> {
   }
 
   // Entry field widget for email and password
-  Widget _entryField(String title, {bool isPassword = false, required TextEditingController controller}) {
+  Widget _entryField(String title,
+      {bool isPassword = false, required TextEditingController controller}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -106,7 +111,8 @@ class _AuthenticationDialogState extends State<AuthenticationDialog> {
 
             // Email and password fields
             _entryField("Email", controller: _emailController),
-            _entryField("Password", isPassword: true, controller: _passwordController),
+            _entryField("Password",
+                isPassword: true, controller: _passwordController),
 
             const SizedBox(height: 20),
 
@@ -116,7 +122,8 @@ class _AuthenticationDialogState extends State<AuthenticationDialog> {
               children: <Widget>[
                 TextButton(
                   onPressed: () {
-                    widget.onCancel(); // Call the onCancel function from the parent
+                    widget
+                        .onCancel(); // Call the onCancel function from the parent
                     Navigator.of(context).pop(false); // Return false on cancel
                   },
                   child: Text("Cancel"),
