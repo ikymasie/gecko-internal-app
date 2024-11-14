@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+     
       {
         "name": "Flutter: Launch",
         "request": "launch",
@@ -8,6 +9,14 @@
         "program": "lib/main.dart",  // Path to your main file
         "cwd": "${workspaceFolder}",
         "flutterMode": "debug",  // You can set this to 'release' for release builds
+        "args": []
+      }, {
+        "name": "Release",
+        "request": "launch",
+        "type": "dart",
+        "program": "lib/main.dart",  // Path to your main file
+        "cwd": "${workspaceFolder}",
+        "flutterMode": "release",  // You can set this to 'release' for release builds
         "args": []
       },
       {

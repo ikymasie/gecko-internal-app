@@ -26,39 +26,56 @@ class AccessControlPage extends StatefulWidget {
 }
 
 class _AccessControlPageState extends State<AccessControlPage> {
-  Color backgroundColor =
-      const Color.fromARGB(255, 231, 231, 231); // Initial idle state color
-  String animationPath =
-      'assets/animation/idle.json'; // Initial idle animation path
+  Color backgroundColor = const Color.fromARGB(255, 231, 231, 231);
+  String animationPath = 'assets/animation/idle.json';
   bool isVerifying = false;
-  final NFCListener nfc = new NFCListener();
-  // Access control helper instance
+  String scanMessage = ''; // Message to show scan result
+  bool isCheckOut = false;
+  final NFCListener nfc = NFCListener();
   final AccessControlHelper _accessControlHelper = AccessControlHelper();
 
-  // Function to validate NFC Ticket and update UI based on outcome
   Future<void> validateNfcTicket(String nfcId) async {
     setState(() {
-      backgroundColor =
-          const Color.fromARGB(255, 125, 168, 233); // Dark blue while verifying
-      animationPath = 'assets/animation/verifying.json'; // Verifying animation
+      backgroundColor = const Color.fromARGB(255, 125, 168, 233);
+      animationPath = 'assets/animation/verifying.json';
       isVerifying = true;
+      scanMessage = 'Verifying...'; // Show verifying message
     });
-
-    // Validate NFC Ticket using the helper method
-    bool isValid = await _accessControlHelper.validateNfcTicket(
-        nfcId, widget.event, widget.location);
-
-    // Update the background and animation based on the result
-    setState(() {
+    bool isValid = false;
+    try {
+      if (isCheckOut) {
+        // checkout stattion
+        await _accessControlHelper.checkoutTicket(nfcId, widget.event);
+        isValid = true;
+      } else {
+        isValid = await _accessControlHelper.validateNfcTicket(
+            nfcId, widget.event, widget.location);
+                setState(() {
       backgroundColor = isValid
           ? const Color.fromARGB(255, 255, 255, 255)
-          : const Color.fromARGB(
-              255, 232, 137, 130); // Green if valid, red if invalid
+          : const Color.fromARGB(255, 232, 137, 130);
       animationPath = isValid
           ? 'assets/animation/success.json'
           : 'assets/animation/error.json';
       isVerifying = false;
+      scanMessage = isValid ? 'Access Granted' : 'Access Denied';
     });
+      }
+    } catch (e) {
+      setState(() {
+              backgroundColor = isValid
+          ? const Color.fromARGB(255, 255, 255, 255)
+          : const Color.fromARGB(255, 232, 137, 130);
+                animationPath = isValid
+          ? 'assets/animation/success.json'
+          : 'assets/animation/error.json';
+        isValid = false;
+        isVerifying = false;
+        scanMessage = '$e';
+      });
+    }
+
+
   }
 
   Future<void> resetScanner() async {
@@ -66,14 +83,14 @@ class _AccessControlPageState extends State<AccessControlPage> {
     setState(() {
       isVerifying = false;
     });
-    String nfcId = await _scanNfc(); // Replace with your NFC scanning method
+    String nfcId = await _scanNfc();
+
     await validateNfcTicket(nfcId);
     resetScanner();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     resetScanner();
   }
@@ -87,25 +104,63 @@ class _AccessControlPageState extends State<AccessControlPage> {
         width: MediaQuery.of(context).size.width,
         color: backgroundColor,
         child: Center(
-            child: Lottie.asset(animationPath, // Display the current animation
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Switch(
+                  value: isCheckOut,
+                  onChanged: (val) {
+
+                    setState(() {
+                      isCheckOut = val;
+                    });
+                  }),
+              Text('Access Type: '+ (isCheckOut ? 'Check Out' : 'Check In'),
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
+              Text(widget.location.name,
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87)),
+              Lottie.asset(
+                animationPath,
                 width: 300,
                 height: 300,
                 fit: BoxFit.contain,
-                repeat: false)),
+                repeat: false,
+              ),
+              SizedBox(height: 20),
+              Text(
+                scanMessage,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: isVerifying
+                      ? Colors.grey
+                      : (scanMessage == 'Access Granted'
+                          ? Colors.green
+                          : Colors.red),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  // Dummy function to simulate NFC scan (replace with actual NFC scan logic)
   Future<String> _scanNfc() async {
     setState(() {
-      backgroundColor =
-          const Color.fromARGB(255, 235, 235, 235); // Dark blue while verifying
-      animationPath = 'assets/animation/idle.json'; // Verifying animation
+      backgroundColor = const Color.fromARGB(255, 235, 235, 235);
+      animationPath = 'assets/animation/idle.json';
       isVerifying = false;
+      scanMessage = 'Ready to scan...';
     });
 
-    var tag= await nfc.listenForNFCTap();
+    var tag = await nfc.listenForNFCTap();
     return tag;
   }
 }

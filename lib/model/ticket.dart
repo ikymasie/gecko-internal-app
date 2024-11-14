@@ -3,17 +3,27 @@ class Ticket {
   final String attendeeId;
   final String ticketTypeId;
   final String eventId;
-   final String? nfcId;
-  final num createdAt;
+  final String? nfcId;
+  final bool? isCheckedIn;
+    final String? checkOutTime;
+      final String? checkInTime;
+        final num createdAt;
+  final num checkedInDuration;
+  final num? lastUpdated;
   final String createdBy;
 
   Ticket({
-    required this.id,
+ required   this.checkOutTime,
+ required   this.checkInTime, 
+ required    this.checkedInDuration,
+    required   this.id,
     required this.attendeeId,
     required this.ticketTypeId,
     required this.eventId,
-     required this.nfcId,
+    required this.nfcId,
+    required this.isCheckedIn,
     required this.createdAt,
+    required this.lastUpdated,
     required this.createdBy,
   });
 
@@ -23,9 +33,16 @@ class Ticket {
       attendeeId: json['attendeeId'],
       ticketTypeId: json['ticketTypeId'],
       eventId: json['eventId'],
-        nfcId: json['nfcId'] ??"",
+      nfcId: json['nfcId'] ?? "",
+      isCheckedIn: json['isCheckedIn'] ?? false,
       createdAt: json['createdAt'],
+      lastUpdated: json['lastUpdated'] ?? 0,
       createdBy: json['createdBy'],
+       checkOutTime:  json['checkOutTime'], 
+       checkInTime:  json['checkInTime'], 
+       
+       checkedInDuration:  json['checkedInDuration'] ?? 0,
+       
     );
   }
 
@@ -35,9 +52,15 @@ class Ticket {
       'attendeeId': attendeeId,
       'ticketTypeId': ticketTypeId,
       'eventId': eventId,
-      'nfcId':nfcId,
+      'nfcId': nfcId,
+      'isCheckedIn': isCheckedIn,
       'createdAt': createdAt,
+      'lastUpdated': lastUpdated,
       'createdBy': createdBy,
+      'checkInTime': checkInTime,
+      'checkedInDuration': checkedInDuration,
+      'checkOutTime': checkOutTime,
+
     };
   }
 }
